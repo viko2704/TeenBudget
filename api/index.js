@@ -13,34 +13,39 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 require("dotenv").config();
 
-const whitelist = ["http://localhost:5174"];
+const whitelist = ["http://localhost:5173"];
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
+    if (!origin || whitelist.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-  optionSuccessStatus: 200
+  optionSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
 
 let verificationCodes = {};
 
+const SECRET_KEY = "1a2b3c4d5e6f7g8h9i0jklmnopqrstuvwxyz123456";
+const EMAIL_USER = "no-reply@teenbudget.noit.eu";
+const EMAIL_PASS = "Noit_2025";
+
 // Create a transporter object using SMTP transport
 const transporter = nodemailer.createTransport({
-  service: "gmail", // or any other email service
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+  host: "teenbudget.noit.eu", // Заменете с вашия cPanel mail сървър
+  port: 587, // Използвайте 465 за SSL или 587 за TLS
+  secure: false, // true за SSL (порт 465), false за TLS (порт 587)
   auth: {
-    user: process.env.EMAIL_USER, // Your email address
-    pass: process.env.EMAIL_PASS // Your email password
+    user: EMAIL_USER, // Вашият имейл адрес
+    pass: EMAIL_PASS // Вашата имейл парола
   },
-  debug: true
+  debug: true // По избор, логва SMTP комуникацията за откриване на проблеми
 });
 
 // Signup Route
@@ -70,7 +75,7 @@ app.post("/signup", (req, res) => {
 
     // Изпраща код за потвърждение по имейл
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: EMAIL_USER,
       to: email,
       subject: "Шестцифрен код за потвърждение от ИМЕ_НА_ПРОЕКТА",
       html: `
@@ -110,7 +115,7 @@ app.post("/resend", (req, res) => {
 
   // Изпраща нов код за потвърждение по имейл
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: EMAIL_USER,
     to: email,
     subject: "Нов шестцифрен код за потвърждение от ИМЕ_НА_ПРОЕКТА",
     html: `
@@ -189,7 +194,7 @@ app.post("/signin", (req, res) => {
         .status(400)
         .json({ error: "Въведената парола е грешна или непълна!" });
 
-    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user.id }, SECRET_KEY, {
       expiresIn: rememberMe ? "7d" : "1h"
     });
     res.json({ message: "Успешно влизане!", token });
@@ -208,7 +213,7 @@ app.post("/password-reset-request", (req, res) => {
         .json({ error: "Не съществува потребител с този имейл адрес!" });
 
     const user = results[0];
-    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user.id }, SECRET_KEY, {
       expiresIn: "15m"
     });
 
@@ -216,7 +221,7 @@ app.post("/password-reset-request", (req, res) => {
     const resetLink = `http://localhost:5174/resetpassword/resetcover/${token}`;
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: EMAIL_USER,
       to: email,
       subject: "Промяна на паролата за ИМЕ_НА_ПРОЕКТА",
       html: `<p>Натиснете <a href="${resetLink}">тук</a>, за да промените паролата си.</p>`
@@ -238,7 +243,7 @@ app.post("/password-reset-request", (req, res) => {
 app.post("/password-reset", (req, res) => {
   const { token, newPassword } = req.body;
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(400).json({ error: "Invalid or expired token" });
 
     const userId = decoded.id;
@@ -258,7 +263,7 @@ app.post("/password-reset", (req, res) => {
 app.post("/token-validation", (req, res) => {
   const { token } = req.body;
 
-  jwt.verify(token, process.env.SECRET_KEY, (err) => {
+  jwt.verify(token, SECRET_KEY, (err) => {
     if (err) return res.json({ valid: false });
     res.json({ valid: true });
   });
@@ -272,7 +277,7 @@ app.get("/user-data", (req, res) => {
     return res.status(401).json({ error: "Token not provided" });
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
 
     const userId = decoded.id;

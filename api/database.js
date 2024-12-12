@@ -1,10 +1,5 @@
 // database.js
 const mysql = require("mysql2");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
-
-require("dotenv").config();
 
 const db = mysql.createConnection({
   host: "localhost",
