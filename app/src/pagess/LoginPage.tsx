@@ -9,11 +9,7 @@ interface LoginErrors {
   password: boolean;
 }
 
-const LoginPage = ({
-  setIsAuthenticated,
-}: {
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const LoginPage = ({}: {}) => {
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
 
@@ -50,10 +46,9 @@ const LoginPage = ({
         });
 
         const data = await response.json();
-
-        if (data.success) {
+        console.log('data: ', data);
+        if (data) {
           localStorage.setItem('authToken', data.token);
-          setIsAuthenticated(true);
           navigate('/main');
         } else {
           throw new Error(data.message || 'Invalid login credentials');

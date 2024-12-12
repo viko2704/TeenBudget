@@ -5,21 +5,22 @@ import WelcomePage from './pagess/WelcomePage';
 import LoginPage from './pagess/LoginPage';
 import SignUpPage from './pagess/SignUpPage';
 import ECommerce from './ECommerce';
+import ProtectedRoute from './layout/ProtectedRoute';
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   return (
     <ThemeProvider>
       <Routes>
         <Route path="/" element={<WelcomePage />} />
-        <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route 
-          path="/main" 
+        <Route
+          path="/main"
           element={
-            <ECommerce setIsAuthenticated={setIsAuthenticated} />
-          } 
+            <ProtectedRoute>
+              <ECommerce />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </ThemeProvider>
