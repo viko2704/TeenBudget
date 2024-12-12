@@ -35,26 +35,35 @@ const SignUpPage = () => {
     if (!Object.values(newErrors).includes(true)) {
       try {
         const nameParts = name.trim().split(' ');
-        const formData = new FormData();
-        formData.append('firstName', nameParts[0]);
-        formData.append(
-          'lastName',
-          nameParts.length > 1 ? nameParts.slice(1).join(' ') : '',
-        );
-        formData.append('email', email.trim());
-        formData.append('password', password);
+        const firstName = nameParts[0];
+        const lastName =
+          nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+
+        // Create the JSON body
+        const body = JSON.stringify({
+          firstName,
+          lastName,
+          email: email.trim(),
+          password,
+        });
 
         const response = await fetch(`http://localhost:5000/signup`, {
           method: 'POST',
-          body: formData,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body,
         });
 
         const data = await response.json();
 
-        if (data.success) {
-          navigate('/login');
+        if (response.ok) {
+          alert(
+            data.message || 'Кодът за потвърждение е изпратен на вашия имейл!',
+          );
+          navigate('/verify'); // Navigate to the verification page
         } else {
-          throw new Error(data.message || 'Грешка при регистрация');
+          throw new Error(data.error || 'Грешка при регистрация');
         }
       } catch (error: any) {
         alert(error.message || 'Възникна неочаквана грешка');
