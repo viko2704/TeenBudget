@@ -71,6 +71,51 @@ const SignUpPage = () => {
     }
   };
 
+  React.useEffect(() => {
+    const checkTokenValidity = async () => {
+      const token =
+        localStorage.getItem('authToken') ||
+        sessionStorage.getItem('authToken');
+
+      if (token) {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/token-validation`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ token }),
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error('Token validation failed');
+          }
+
+          const result = await response.json();
+
+          if (result.valid) {
+            navigate(`/main`);
+          } else {
+            console.log('Invalid token');
+            localStorage.removeItem('authToken');
+            sessionStorage.removeItem('authToken');
+            navigate('/login');
+          }
+        } catch (error) {
+          console.error('Error validating token:', error);
+          navigate('/login');
+        }
+      } else {
+        navigate('/login');
+      }
+    };
+
+    checkTokenValidity();
+  }, [navigate]);
+
   const inputClasses = (error: boolean) => `
     w-full px-4 py-3 rounded-xl text-lg transition-all duration-300
     ${
