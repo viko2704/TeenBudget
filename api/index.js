@@ -77,10 +77,10 @@ app.post("/signup", (req, res) => {
     const mailOptions = {
       from: EMAIL_USER,
       to: email,
-      subject: "Шестцифрен код за потвърждение от ИМЕ_НА_ПРОЕКТА",
+      subject: "Шестцифрен код за потвърждение от ТийнБюджет",
       html: `
       <div style="text-align: center; background-color: rgba(244, 211, 139, 0.5); margin: 2% 3%; padding: 3% 1%; border: 4px dotted rgb(178, 50, 0); border-radius: 20px">
-        <h2>Благодарим Ви за регистрацията в <span style="color: rgb(178, 50, 0); font-weight: 600;">🕮</span>ИМЕ_НА_ПРОЕКТА<span style="color: rgb(178, 50, 0); font-weight: 600;">🕮</span></h2>
+        <h2>Благодарим Ви за регистрацията в <span style="color: rgb(178, 50, 0); font-weight: 600;">🕮</span>ТийнБюджет<span style="color: rgb(178, 50, 0); font-weight: 600;">🕮</span></h2>
           <hr style="border: 0.5px solid rgb(178, 50, 0); width: 18%; margin-top: 6%; margin-bottom: 4%"></hr>
         <p>Вашият шестцифрен код е <strong style="font-size: 20px; color: rgb(178, 50, 0)">${verificationCode}</strong>.</p>
       </div>
@@ -117,7 +117,7 @@ app.post("/resend", (req, res) => {
   const mailOptions = {
     from: EMAIL_USER,
     to: email,
-    subject: "Нов шестцифрен код за потвърждение от ИМЕ_НА_ПРОЕКТА",
+    subject: "Нов шестцифрен код за потвърждение от ТийнБюджет",
     html: `
       <div style="text-align: center; background-color: rgba(244, 211, 139, 0.5); margin: 2% 3%; padding: 3% 1%; border: 4px dotted rgb(178, 50, 0); border-radius: 20px">
         <p>Вашият шестцифрен код е <strong style="font-size: 20px; color: rgb(178, 50, 0)">${verificationCode}</strong>.</p>
@@ -223,7 +223,7 @@ app.post("/password-reset-request", (req, res) => {
     const mailOptions = {
       from: EMAIL_USER,
       to: email,
-      subject: "Промяна на паролата за ИМЕ_НА_ПРОЕКТА",
+      subject: "Промяна на паролата за ТийнБюджет",
       html: `<p>Натиснете <a href="${resetLink}">тук</a>, за да промените паролата си.</p>`
     };
 
