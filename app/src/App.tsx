@@ -6,6 +6,7 @@ import LoginPage from './pagess/LoginPage';
 import SignUpPage from './pagess/SignUpPage';
 import ECommerce from './ECommerce';
 import ProtectedRoute from './layout/ProtectedRoute';
+import VerifyPage from './pagess/VerifyPage';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/" element={<WelcomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/verify" element={<VerifyPage />} />
         <Route
           path="/main"
           element={

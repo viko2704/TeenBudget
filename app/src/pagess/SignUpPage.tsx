@@ -61,7 +61,9 @@ const SignUpPage = () => {
           alert(
             data.message || 'Кодът за потвърждение е изпратен на вашия имейл!',
           );
-          navigate('/verify'); // Navigate to the verification page
+          navigate('/verify', {
+            state: { email: email },
+          }); // Navigate to the verification page
         } else {
           throw new Error(data.error || 'Грешка при регистрация');
         }
@@ -102,14 +104,14 @@ const SignUpPage = () => {
             console.log('Invalid token');
             localStorage.removeItem('authToken');
             sessionStorage.removeItem('authToken');
-            navigate('/login');
+            navigate('/signup');
           }
         } catch (error) {
           console.error('Error validating token:', error);
-          navigate('/login');
+          navigate('/signup');
         }
       } else {
-        navigate('/login');
+        navigate('/signup');
       }
     };
 
