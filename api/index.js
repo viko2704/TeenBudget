@@ -218,7 +218,7 @@ app.post("/password-reset-request", (req, res) => {
     });
 
     // Create a reset link
-    const resetLink = `http://localhost:5174/resetpassword/resetcover/${token}`;
+    const resetLink = `http://localhost:5173/resetpassword/resetcover/${token}`;
 
     const mailOptions = {
       from: EMAIL_USER,
